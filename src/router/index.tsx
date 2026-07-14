@@ -2,6 +2,10 @@ import { createBrowserRouter } from 'react-router-dom'
 import { ConsumerLayout } from '@/components/layout/ConsumerLayout'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Main } from '@/pages/Consumer/Main'
+import { Missions } from '@/pages/Consumer/Missions'
+import { Map } from '@/pages/Consumer/Map'
+import { Coupons } from '@/pages/Consumer/Coupons'
+import { MyPage } from '@/pages/Consumer/MyPage'
 import { ComingSoon } from '@/pages/ComingSoon'
 import { Welcome } from '@/pages/Auth/Welcome'
 import { Login } from '@/pages/Auth/Login'
@@ -16,10 +20,10 @@ export const router = createBrowserRouter([
     element: <ConsumerLayout />,
     children: [
       { index: true, element: <Main /> },
-      { path: 'missions', element: <ComingSoon title="미션 리스트" /> },
-      { path: 'map', element: <ComingSoon title="지도" /> },
-      { path: 'coupons', element: <ComingSoon title="쿠폰" /> },
-      { path: 'mypage', element: <ComingSoon title="마이페이지" /> },
+      { path: 'missions', element: <Missions /> },
+      { path: 'map', element: <Map /> },
+      { path: 'coupons', element: <Coupons /> },
+      { path: 'mypage', element: <MyPage /> },
     ],
   },
   {
