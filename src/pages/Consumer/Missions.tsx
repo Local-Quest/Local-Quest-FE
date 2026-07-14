@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Search, ArrowUpDown, ChevronRight } from 'lucide-react'
+import { Search, ArrowUpDown, ChevronRight, ImageOff } from 'lucide-react'
 import { PointsBadge } from '@/components/PointsBadge'
 
 // ---------------------------------------------------------------------------
@@ -11,7 +11,7 @@ import { PointsBadge } from '@/components/PointsBadge'
 
 const pointBalance = 1240
 
-type MissionState = 'active' | 'default' | 'waiting' | 'done'
+type MissionState = 'active' | 'default' | 'waiting' | 'done' | 'closed'
 
 interface MissionItem {
   id: string
@@ -20,6 +20,7 @@ interface MissionItem {
   distance: string
   rewardText: string
   state: MissionState
+  photoUrl?: string
 }
 
 const categories = ['전체', '카페', '베이커리', '편의점', '꽃집']
@@ -31,6 +32,7 @@ const missions: MissionItem[] = [
   { id: '4', storeName: '꽃소식 플라워', category: '꽃집', distance: '1.1km', rewardText: '+60P', state: 'default' },
   { id: '5', storeName: '헬스보이짐 선릉', category: '운동', distance: '1.2km', rewardText: '18시 이후 열림', state: 'waiting' },
   { id: '6', storeName: '김밥천국 역삼점', category: '분식', distance: '320m', rewardText: '+50P 적립완료', state: 'done' },
+  { id: '7', storeName: '컵밥나라 역삼점', category: '분식', distance: '450m', rewardText: '+40P', state: 'closed' },
 ]
 
 const Page = styled.div`
@@ -141,10 +143,31 @@ const Item = styled.div<{ dim?: boolean }>`
   }
 `
 
+const ItemLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+`
+
+/** 매장 사진 자리표시자. 실제 사진 없으면 카테고리 아이콘으로 대체 노출 */
+const Thumbnail = styled.div<{ photoUrl?: string }>`
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: ${(p) => (p.photoUrl ? `url(${p.photoUrl}) center/cover no-repeat` : '#f3ece2')};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c9b3a5;
+`
+
 const ItemInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 `
 
 const ItemName = styled.p<{ muted?: boolean; strike?: boolean }>`
@@ -184,10 +207,21 @@ const StatusLabel = styled.p`
   color: #a2917f;
 `
 
+const ClosedBadge = styled.span`
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #f1e9df;
+  font-weight: 700;
+  font-size: 11px;
+  color: #a2917f;
+`
+
 function ItemRight({ mission }: { mission: MissionItem }) {
   if (mission.state === 'active') return <VerifyButton type="button">인증</VerifyButton>
   if (mission.state === 'waiting') return <StatusLabel>대기</StatusLabel>
   if (mission.state === 'done') return <StatusLabel>완료</StatusLabel>
+  if (mission.state === 'closed') return <ClosedBadge>마감됨</ClosedBadge>
   return <ChevronRight size={17} color="#c9b3a5" />
 }
 
@@ -223,23 +257,28 @@ export function Missions() {
 
       <List>
         {missions.map((mission) => {
-          const dim = mission.state === 'done'
-          const muted = mission.state === 'waiting' || mission.state === 'done'
+          const dim = mission.state === 'done' || mission.state === 'closed'
+          const muted = mission.state === 'waiting' || mission.state === 'done' || mission.state === 'closed'
           return (
             <Item key={mission.id} dim={dim}>
-              <ItemInfo>
-                <ItemName muted={muted} strike={mission.state === 'done'}>
-                  {mission.storeName}
-                </ItemName>
-                <ItemMeta muted={muted}>
-                  {mission.category} · {mission.distance} ·{' '}
-                  {mission.state === 'active' || mission.state === 'default' ? (
-                    <strong>{mission.rewardText}</strong>
-                  ) : (
-                    mission.rewardText
-                  )}
-                </ItemMeta>
-              </ItemInfo>
+              <ItemLeft>
+                <Thumbnail photoUrl={mission.photoUrl}>
+                  {!mission.photoUrl && <ImageOff size={18} />}
+                </Thumbnail>
+                <ItemInfo>
+                  <ItemName muted={muted} strike={mission.state === 'done'}>
+                    {mission.storeName}
+                  </ItemName>
+                  <ItemMeta muted={muted}>
+                    {mission.category} · {mission.distance} ·{' '}
+                    {mission.state === 'active' || mission.state === 'default' ? (
+                      <strong>{mission.rewardText}</strong>
+                    ) : (
+                      mission.rewardText
+                    )}
+                  </ItemMeta>
+                </ItemInfo>
+              </ItemLeft>
               <ItemRight mission={mission} />
             </Item>
           )

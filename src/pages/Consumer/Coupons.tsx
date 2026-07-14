@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import styled from '@emotion/styled'
+import { Search } from 'lucide-react'
 import { PointsBadge } from '@/components/PointsBadge'
 
 // ---------------------------------------------------------------------------
@@ -86,6 +87,22 @@ const Title = styled.p`
   font-size: 22px;
   letter-spacing: -0.66px;
   color: #1f1a15;
+`
+
+const SearchBar = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  background: #ffffff;
+  border: 1px solid #f0e7dc;
+  border-radius: 14px;
+`
+
+const SearchPlaceholder = styled.p`
+  font-weight: 500;
+  font-size: 13px;
+  color: #bcaa99;
 `
 
 const TabRow = styled.div`
@@ -179,6 +196,11 @@ export function Coupons() {
         <Title>내 쿠폰</Title>
         <PointsBadge points={pointBalance} />
       </Header>
+
+      <SearchBar>
+        <Search size={17} color="#bcaa99" />
+        <SearchPlaceholder>매장명 검색</SearchPlaceholder>
+      </SearchBar>
 
       <TabRow>
         {TABS.map((tab) => (
