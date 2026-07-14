@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { useNavigate } from 'react-router-dom'
 import { Settings, ImagePlus, Clock, ClipboardCheck, Ticket, Bell, ChevronRight } from 'lucide-react'
 
 // ---------------------------------------------------------------------------
@@ -22,11 +23,11 @@ const stats = [
 ]
 
 const menuItems = [
-  { icon: Clock, label: '포인트 적립 내역' },
-  { icon: ClipboardCheck, label: '미션 기록' },
-  { icon: Ticket, label: '쿠폰함' },
-  { icon: Bell, label: '알림 설정' },
-  { icon: Settings, label: '설정' },
+  { icon: Clock, label: '포인트 적립 내역', path: '/mypage/points' },
+  { icon: ClipboardCheck, label: '미션 기록', path: '/mypage/missions' },
+  { icon: Ticket, label: '쿠폰함', path: '/coupons' },
+  { icon: Bell, label: '알림 설정', path: '/mypage/settings' },
+  { icon: Settings, label: '설정', path: '/mypage/settings' },
 ]
 
 const Page = styled.div`
@@ -197,11 +198,13 @@ const LogoutButton = styled.button`
 `
 
 export function MyPage() {
+  const navigate = useNavigate()
+
   return (
     <Page>
       <Header>
         <Title>마이</Title>
-        <SettingsButton type="button" aria-label="설정">
+        <SettingsButton type="button" aria-label="설정" onClick={() => navigate('/mypage/settings')}>
           <Settings size={18} />
         </SettingsButton>
       </Header>
@@ -217,7 +220,9 @@ export function MyPage() {
             {profile.regionLabel} · {profile.joinedLabel}
           </ProfileSubtitle>
         </ProfileText>
-        <EditButton type="button">프로필 수정</EditButton>
+        <EditButton type="button" onClick={() => navigate('/mypage/edit')}>
+          프로필 수정
+        </EditButton>
       </ProfileRow>
 
       <StatsCard>
@@ -230,8 +235,8 @@ export function MyPage() {
       </StatsCard>
 
       <MenuList>
-        {menuItems.map(({ icon: Icon, label }) => (
-          <MenuRow key={label} type="button">
+        {menuItems.map(({ icon: Icon, label, path }) => (
+          <MenuRow key={label} type="button" onClick={() => navigate(path)}>
             <Icon size={20} />
             <MenuLabel>{label}</MenuLabel>
             <ChevronRight size={17} color="#c9b3a5" />
@@ -239,7 +244,9 @@ export function MyPage() {
         ))}
       </MenuList>
 
-      <LogoutButton type="button">로그아웃</LogoutButton>
+      <LogoutButton type="button" onClick={() => navigate('/welcome', { replace: true })}>
+        로그아웃
+      </LogoutButton>
     </Page>
   )
 }

@@ -122,10 +122,24 @@ const RecentSection = styled.div`
   border-top: 1px solid #f1e9df;
 `
 
+const RecentHeaderRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
 const RecentTitle = styled.p`
   font-size: 14px;
   color: #1f1a15;
   letter-spacing: 0.56px;
+`
+
+const DashboardLink = styled.button`
+  border: none;
+  background: none;
+  color: #e6853d;
+  font-size: 12px;
+  cursor: pointer;
 `
 
 const RecentList = styled.div`
@@ -200,7 +214,12 @@ export function OwnerMain() {
       </ActionCol>
 
       <RecentSection>
-        <RecentTitle>최근 활동</RecentTitle>
+        <RecentHeaderRow>
+          <RecentTitle>최근 활동</RecentTitle>
+          <DashboardLink type="button" onClick={() => navigate('/owner/dashboard')}>
+            방문 통계 보기 →
+          </DashboardLink>
+        </RecentHeaderRow>
         <RecentList>
           {recentActivity.map((a) => (
             <RecentRow key={a.title}>

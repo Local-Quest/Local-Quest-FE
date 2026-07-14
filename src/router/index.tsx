@@ -16,6 +16,10 @@ import { MissionCompleteModal } from '@/pages/Consumer/MissionCompleteModal'
 import { CouponRedeemSheet } from '@/pages/Consumer/CouponRedeemSheet'
 import { InsufficientPointsSheet } from '@/pages/Consumer/InsufficientPointsSheet'
 import { MonthlyProgress } from '@/pages/Consumer/MonthlyProgress'
+import { ProfileEdit } from '@/pages/Consumer/ProfileEdit'
+import { PointsHistory } from '@/pages/Consumer/PointsHistory'
+import { MissionHistory } from '@/pages/Consumer/MissionHistory'
+import { Settings } from '@/pages/Consumer/Settings'
 import { Welcome } from '@/pages/Auth/Welcome'
 import { Login } from '@/pages/Auth/Login'
 import { Signup } from '@/pages/Auth/Signup'
@@ -36,6 +40,8 @@ import { DiscountUpdateModal } from '@/pages/Owner/DiscountUpdateModal'
 import { OwnerCouponDetail } from '@/pages/Owner/OwnerCouponDetail'
 import { CouponUseModal } from '@/pages/Owner/CouponUseModal'
 import { CouponUseComplete } from '@/pages/Owner/CouponUseComplete'
+import { VisitDashboard } from '@/pages/Owner/VisitDashboard'
+import { StoreEdit } from '@/pages/Owner/StoreEdit'
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +77,10 @@ export const router = createBrowserRouter([
       { path: '/coupons/:id/redeem', element: <CouponRedeemSheet /> },
       { path: '/coupons/:id/redeem/insufficient', element: <InsufficientPointsSheet /> },
       { path: '/calendar', element: <MonthlyProgress /> },
+      { path: '/mypage/edit', element: <ProfileEdit /> },
+      { path: '/mypage/points', element: <PointsHistory /> },
+      { path: '/mypage/missions', element: <MissionHistory /> },
+      { path: '/mypage/settings', element: <Settings /> },
       { path: '/onboarding', element: <CustomerOnboarding /> },
       { path: '/owner/onboarding', element: <OwnerOnboarding /> },
       { path: '/welcome', element: <Welcome loginPath="/login" signupPath="/signup" /> },
@@ -90,6 +100,8 @@ export const router = createBrowserRouter([
       { path: '/owner/missions/:id', element: <OwnerMissionDetail /> },
       { path: '/owner/missions/:id/delete', element: <MissionDeleteModal /> },
       { path: '/owner/discounts/:id/edit', element: <DiscountUpdateModal /> },
+      { path: '/owner/dashboard', element: <VisitDashboard /> },
+      { path: '/owner/store/edit', element: <StoreEdit /> },
     ],
   },
 ])

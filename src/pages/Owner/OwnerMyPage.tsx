@@ -179,11 +179,11 @@ export function OwnerMyPage() {
       </ProfileRow>
 
       <MenuSection>
-        <MenuRow type="button" onClick={() => navigate('/owner/store/register')}>
+        <MenuRow type="button" onClick={() => navigate('/owner/store/edit')}>
           매장 정보 관리
           <ChevronRight size={16} color="#c9b3a5" />
         </MenuRow>
-        <MenuRow type="button">
+        <MenuRow type="button" onClick={() => navigate('/owner/dashboard')}>
           방문 분석 통계
           <ChevronRight size={16} color="#c9b3a5" />
         </MenuRow>
