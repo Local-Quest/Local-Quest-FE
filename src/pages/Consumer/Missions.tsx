@@ -1,6 +1,7 @@
+import { useMemo, useState } from 'react'
 import styled from '@emotion/styled'
 import { useNavigate } from 'react-router-dom'
-import { Search, ArrowUpDown, ChevronRight, ImageOff } from 'lucide-react'
+import { Search, ArrowUpDown, ChevronRight, ImageOff, Check } from 'lucide-react'
 import { PointsBadge } from '@/components/PointsBadge'
 
 // ---------------------------------------------------------------------------
@@ -19,21 +20,31 @@ interface MissionItem {
   storeName: string
   category: string
   distance: string
+  distanceM: number // 거리순 정렬용 (m)
+  createdAt: number // 최신순/오래된순 정렬용 (등록 시각, 클수록 최신)
   rewardText: string
   state: MissionState
   photoUrl?: string
 }
 
-const categories = ['전체', '카페', '베이커리', '편의점', '꽃집']
+type SortKey = 'distance' | 'latest' | 'oldest'
+
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: 'distance', label: '거리순' },
+  { key: 'latest', label: '최신순' },
+  { key: 'oldest', label: '오래된순' },
+]
+
+const categories = ['전체', '카페', '베이커리', '편의점', '꽃집', '운동', '분식']
 
 const missions: MissionItem[] = [
-  { id: '1', storeName: '블루보틀 성수', category: '카페', distance: '210m', rewardText: '+100P', state: 'active' },
-  { id: '2', storeName: '파리크라상 역삼', category: '베이커리', distance: '640m', rewardText: '+80P', state: 'default' },
-  { id: '3', storeName: 'GS25 선릉역점', category: '편의점', distance: '880m', rewardText: '+30P', state: 'default' },
-  { id: '4', storeName: '꽃소식 플라워', category: '꽃집', distance: '1.1km', rewardText: '+60P', state: 'default' },
-  { id: '5', storeName: '헬스보이짐 선릉', category: '운동', distance: '1.2km', rewardText: '18시 이후 열림', state: 'waiting' },
-  { id: '6', storeName: '김밥천국 역삼점', category: '분식', distance: '320m', rewardText: '+50P 적립완료', state: 'done' },
-  { id: '7', storeName: '컵밥나라 역삼점', category: '분식', distance: '450m', rewardText: '+40P', state: 'closed' },
+  { id: '1', storeName: '블루보틀 성수', category: '카페', distance: '210m', distanceM: 210, createdAt: 7, rewardText: '+100P', state: 'active' },
+  { id: '2', storeName: '파리크라상 역삼', category: '베이커리', distance: '640m', distanceM: 640, createdAt: 6, rewardText: '+80P', state: 'default' },
+  { id: '3', storeName: 'GS25 선릉역점', category: '편의점', distance: '880m', distanceM: 880, createdAt: 5, rewardText: '+30P', state: 'default' },
+  { id: '4', storeName: '꽃소식 플라워', category: '꽃집', distance: '1.1km', distanceM: 1100, createdAt: 4, rewardText: '+60P', state: 'default' },
+  { id: '5', storeName: '헬스보이짐 선릉', category: '운동', distance: '1.2km', distanceM: 1200, createdAt: 3, rewardText: '18시 이후 열림', state: 'waiting' },
+  { id: '6', storeName: '김밥천국 역삼점', category: '분식', distance: '320m', distanceM: 320, createdAt: 2, rewardText: '+50P 적립완료', state: 'done' },
+  { id: '7', storeName: '컵밥나라 역삼점', category: '분식', distance: '450m', distanceM: 450, createdAt: 1, rewardText: '+40P', state: 'closed' },
 ]
 
 const Page = styled.div`
@@ -67,10 +78,19 @@ const SearchBar = styled.div`
   border-radius: 14px;
 `
 
-const SearchPlaceholder = styled.p`
+const SearchInput = styled.input`
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: 'Pretendard', sans-serif;
   font-weight: 500;
   font-size: 13px;
-  color: #bcaa99;
+  color: #1f1a15;
+
+  &::placeholder {
+    color: #bcaa99;
+  }
 `
 
 const CategoryRow = styled.div`
@@ -113,6 +133,10 @@ const ResultCount = styled.p`
   }
 `
 
+const SortWrap = styled.div`
+  position: relative;
+`
+
 const SortLabel = styled.button`
   display: flex;
   align-items: center;
@@ -123,6 +147,45 @@ const SortLabel = styled.button`
   font-weight: 600;
   font-size: 12.5px;
   color: #1f1a15;
+`
+
+const SortMenu = styled.div`
+  position: absolute;
+  right: 0;
+  top: 26px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid #f0e7dc;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(31, 26, 21, 0.12);
+`
+
+const SortMenuItem = styled.button<{ active: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 8px;
+  background: ${(p) => (p.active ? '#fbf3ec' : 'none')};
+  cursor: pointer;
+  font-weight: ${(p) => (p.active ? 700 : 500)};
+  font-size: 13px;
+  color: #1f1a15;
+  text-align: left;
+`
+
+const EmptyText = styled.p`
+  padding: 40px 0;
+  text-align: center;
+  font-weight: 500;
+  font-size: 13px;
+  color: #b6a493;
 `
 
 const List = styled.div`
@@ -239,6 +302,30 @@ function ItemRight({ mission, onVerify }: { mission: MissionItem; onVerify: () =
 
 export function Missions() {
   const navigate = useNavigate()
+  const [query, setQuery] = useState('')
+  const [category, setCategory] = useState('전체')
+  const [sort, setSort] = useState<SortKey>('distance')
+  const [sortOpen, setSortOpen] = useState(false)
+
+  const visibleMissions = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    const filtered = missions.filter((m) => {
+      const matchesCategory = category === '전체' || m.category === category
+      const matchesQuery =
+        q === '' ||
+        m.storeName.toLowerCase().includes(q) ||
+        m.category.toLowerCase().includes(q)
+      return matchesCategory && matchesQuery
+    })
+    const sorted = [...filtered].sort((a, b) => {
+      if (sort === 'distance') return a.distanceM - b.distanceM
+      if (sort === 'latest') return b.createdAt - a.createdAt
+      return a.createdAt - b.createdAt // oldest
+    })
+    return sorted
+  }, [query, category, sort])
+
+  const sortLabel = SORT_OPTIONS.find((o) => o.key === sort)?.label ?? '거리순'
 
   return (
     <Page>
@@ -249,12 +336,17 @@ export function Missions() {
 
       <SearchBar>
         <Search size={17} color="#bcaa99" />
-        <SearchPlaceholder>매장명, 카테고리 검색</SearchPlaceholder>
+        <SearchInput
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="매장명, 카테고리 검색"
+          aria-label="미션 검색"
+        />
       </SearchBar>
 
       <CategoryRow>
-        {categories.map((c, i) => (
-          <CategoryChip key={c} active={i === 0} type="button">
+        {categories.map((c) => (
+          <CategoryChip key={c} active={category === c} type="button" onClick={() => setCategory(c)}>
             {c}
           </CategoryChip>
         ))}
@@ -262,15 +354,38 @@ export function Missions() {
 
       <ResultRow>
         <ResultCount>
-          주변 미션 <strong>{missions.length}</strong>개
+          주변 미션 <strong>{visibleMissions.length}</strong>개
         </ResultCount>
-        <SortLabel type="button">
-          거리순 <ArrowUpDown size={13} />
-        </SortLabel>
+        <SortWrap>
+          <SortLabel type="button" onClick={() => setSortOpen((v) => !v)}>
+            {sortLabel} <ArrowUpDown size={13} />
+          </SortLabel>
+          {sortOpen && (
+            <SortMenu>
+              {SORT_OPTIONS.map((option) => (
+                <SortMenuItem
+                  key={option.key}
+                  type="button"
+                  active={sort === option.key}
+                  onClick={() => {
+                    setSort(option.key)
+                    setSortOpen(false)
+                  }}
+                >
+                  {option.label}
+                  {sort === option.key && <Check size={14} color="#e6853d" />}
+                </SortMenuItem>
+              ))}
+            </SortMenu>
+          )}
+        </SortWrap>
       </ResultRow>
 
-      <List>
-        {missions.map((mission) => {
+      {visibleMissions.length === 0 ? (
+        <EmptyText>검색 결과가 없어요</EmptyText>
+      ) : (
+        <List>
+          {visibleMissions.map((mission) => {
           const dim = mission.state === 'done' || mission.state === 'closed'
           const muted = mission.state === 'waiting' || mission.state === 'done' || mission.state === 'closed'
           const clickable = mission.state !== 'closed'
@@ -302,8 +417,9 @@ export function Missions() {
               <ItemRight mission={mission} onVerify={() => navigate(`/missions/${mission.id}/verify`)} />
             </Item>
           )
-        })}
-      </List>
+          })}
+        </List>
+      )}
     </Page>
   )
 }

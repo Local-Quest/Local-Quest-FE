@@ -3,9 +3,11 @@ import styled from '@emotion/styled'
 import { useNavigate } from 'react-router-dom'
 import { AlertTriangle } from 'lucide-react'
 import { SubPageHeader } from '@/components/SubPageHeader'
+import { useAuthStore } from '@/store/useAuthStore'
 
 // ---------------------------------------------------------------------------
-// TODO(API 연동): PATCH /customer/settings/notification, POST /auth/logout, DELETE /customer/account
+// TODO(API 연동): PATCH /customer/settings/notification, DELETE /customer/account
+// (로그아웃은 /auth 스토어로 연동 완료. 회원탈퇴는 /customer 범위로 추후 연동)
 // 진행 중인 인증 건이 있는 상태에서 탈퇴 시도 시 -> 처리 완료 후 탈퇴 가능하도록 서버 응답 기반 분기 필요
 // ---------------------------------------------------------------------------
 
@@ -138,8 +140,20 @@ const ConfirmDelete = styled.button`
 
 export function Settings() {
   const navigate = useNavigate()
+  const logout = useAuthStore((s) => s.logout)
   const [notifyOn, setNotifyOn] = useState(true)
   const [confirmingWithdraw, setConfirmingWithdraw] = useState(false)
+
+  const handleLogout = () => {
+    logout()
+    navigate('/welcome', { replace: true })
+  }
+
+  const handleWithdraw = () => {
+    // TODO(API 연동): DELETE /customer/account 후 처리. 현재는 로컬 세션만 정리.
+    logout()
+    navigate('/welcome', { replace: true })
+  }
 
   return (
     <Page>
@@ -153,7 +167,7 @@ export function Settings() {
       </Section>
 
       <BottomSection>
-        <LogoutButton type="button" onClick={() => navigate('/welcome', { replace: true })}>
+        <LogoutButton type="button" onClick={handleLogout}>
           로그아웃
         </LogoutButton>
 
@@ -172,7 +186,7 @@ export function Settings() {
               <ConfirmCancel type="button" onClick={() => setConfirmingWithdraw(false)}>
                 취소
               </ConfirmCancel>
-              <ConfirmDelete type="button" onClick={() => navigate('/welcome', { replace: true })}>
+              <ConfirmDelete type="button" onClick={handleWithdraw}>
                 탈퇴하기
               </ConfirmDelete>
             </ConfirmActions>

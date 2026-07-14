@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import { useNavigate } from 'react-router-dom'
 import { Settings, ImagePlus, Clock, ClipboardCheck, Ticket, ChevronRight } from 'lucide-react'
+import { useProfileStore } from '@/store/useProfileStore'
 
 // ---------------------------------------------------------------------------
 // TODO(API 연동): 아래 더미 데이터는 실제로 이 엔드포인트들로 교체될 예정
@@ -25,7 +26,7 @@ const stats = [
 const menuItems = [
   { icon: Clock, label: '포인트 적립 내역', path: '/mypage/points' },
   { icon: ClipboardCheck, label: '미션 기록', path: '/mypage/missions' },
-  { icon: Ticket, label: '쿠폰함', path: '/coupons' },
+  { icon: Ticket, label: '쿠폰함', path: '/mypage/coupons' },
   { icon: Settings, label: '설정', path: '/mypage/settings' },
 ]
 
@@ -69,7 +70,7 @@ const ProfileRow = styled.div`
   gap: 15px;
 `
 
-const Avatar = styled.div`
+const Avatar = styled.div<{ image?: string | null }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -79,8 +80,9 @@ const Avatar = styled.div`
   width: 66px;
   height: 66px;
   border-radius: 33px;
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px dashed rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  background: ${(p) => (p.image ? `url(${p.image}) center/cover no-repeat` : 'rgba(0, 0, 0, 0.04)')};
+  border: ${(p) => (p.image ? '1px solid #ece2d6' : '1px dashed rgba(0, 0, 0, 0.25)')};
   color: rgba(0, 0, 0, 0.4);
 `
 
@@ -187,6 +189,7 @@ const MenuLabel = styled.span`
 
 export function MyPage() {
   const navigate = useNavigate()
+  const { nickname, avatarUrl } = useProfileStore()
 
   return (
     <Page>
@@ -198,12 +201,16 @@ export function MyPage() {
       </Header>
 
       <ProfileRow>
-        <Avatar>
-          <ImagePlus size={22} />
-          <AvatarLabel>사진</AvatarLabel>
+        <Avatar image={avatarUrl}>
+          {!avatarUrl && (
+            <>
+              <ImagePlus size={22} />
+              <AvatarLabel>사진</AvatarLabel>
+            </>
+          )}
         </Avatar>
         <ProfileText>
-          <ProfileName>{profile.name}</ProfileName>
+          <ProfileName>{nickname}</ProfileName>
           <ProfileSubtitle>
             {profile.regionLabel} · {profile.joinedLabel}
           </ProfileSubtitle>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import styled from '@emotion/styled'
 import { Search } from 'lucide-react'
 import { PointsBadge } from '@/components/PointsBadge'
+import { SubPageHeader } from '@/components/SubPageHeader'
 
 // ---------------------------------------------------------------------------
 // TODO(API 연동): 아래 더미 데이터는 실제로 이 엔드포인트들로 교체될 예정
@@ -102,10 +103,19 @@ const SearchBar = styled.div`
   border-radius: 14px;
 `
 
-const SearchPlaceholder = styled.p`
+const SearchInput = styled.input`
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: 'Pretendard', sans-serif;
   font-weight: 500;
   font-size: 13px;
-  color: #bcaa99;
+  color: #1f1a15;
+
+  &::placeholder {
+    color: #bcaa99;
+  }
 `
 
 const TabRow = styled.div`
@@ -189,21 +199,44 @@ const EmptyText = styled.p`
   color: #b6a493;
 `
 
-export function Coupons() {
+/**
+ * 보유 쿠폰(내 쿠폰) 리스트.
+ * - 하단 네비 '쿠폰' 탭: asSubPage=false (기본) — 메인 탭 헤더(제목 + 포인트)
+ * - 마이페이지 '쿠폰함': asSubPage=true — 뒤로가기 서브페이지 헤더
+ */
+/**
+ * 보유 쿠폰(내 쿠폰) 리스트.
+ * - 하단 네비 '쿠폰' 탭: asSubPage=false (기본) — 메인 탭 헤더(제목 + 포인트)
+ * - 마이페이지 '쿠폰함': asSubPage=true — 뒤로가기 서브페이지 헤더
+ */
+export function Coupons({ asSubPage = false }: { asSubPage?: boolean }) {
   const [status, setStatus] = useState<CouponStatus>('available')
-  const coupons = couponsByStatus[status]
+  const [query, setQuery] = useState('')
+  const q = query.trim().toLowerCase()
+  const coupons = couponsByStatus[status].filter(
+    (c) => q === '' || c.storeName.toLowerCase().includes(q) || c.title.toLowerCase().includes(q),
+  )
 
   return (
-    <Page>
-      <Header>
-        <Title>내 쿠폰</Title>
-        <PointsBadge points={pointBalance} />
-      </Header>
+    <>
+      {asSubPage && <SubPageHeader title="내 쿠폰" />}
+      <Page>
+        {!asSubPage && (
+          <Header>
+            <Title>내 쿠폰</Title>
+            <PointsBadge points={pointBalance} />
+          </Header>
+        )}
 
-      <SearchBar>
-        <Search size={17} color="#bcaa99" />
-        <SearchPlaceholder>매장명 검색</SearchPlaceholder>
-      </SearchBar>
+        <SearchBar>
+          <Search size={17} color="#bcaa99" />
+          <SearchInput
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="매장명 검색"
+            aria-label="쿠폰 검색"
+          />
+        </SearchBar>
 
       <TabRow>
         {TABS.map((tab) => (
@@ -232,9 +265,14 @@ export function Coupons() {
         </List>
       )}
 
-      <EmptyText>
-        {coupons.length > 0 ? '미션을 완료하면 새로운 쿠폰이 쌓여요' : '아직 쿠폰이 없어요'}
-      </EmptyText>
-    </Page>
+        <EmptyText>
+          {coupons.length > 0
+            ? '미션을 완료하면 새로운 쿠폰이 쌓여요'
+            : q !== ''
+              ? '일치하는 쿠폰이 없어요'
+              : '아직 쿠폰이 없어요'}
+        </EmptyText>
+      </Page>
+    </>
   )
 }

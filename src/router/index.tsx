@@ -18,6 +18,7 @@ import { ProfileEdit } from '@/pages/Consumer/ProfileEdit'
 import { PointsHistory } from '@/pages/Consumer/PointsHistory'
 import { MissionHistory } from '@/pages/Consumer/MissionHistory'
 import { Settings } from '@/pages/Consumer/Settings'
+import { Notifications } from '@/pages/Consumer/Notifications'
 import { Welcome } from '@/pages/Auth/Welcome'
 import { Login } from '@/pages/Auth/Login'
 import { Signup } from '@/pages/Auth/Signup'
@@ -77,7 +78,9 @@ export const router = createBrowserRouter([
       { path: '/mypage/edit', element: <ProfileEdit /> },
       { path: '/mypage/points', element: <PointsHistory /> },
       { path: '/mypage/missions', element: <MissionHistory /> },
+      { path: '/mypage/coupons', element: <Coupons asSubPage /> },
       { path: '/mypage/settings', element: <Settings /> },
+      { path: '/notifications', element: <Notifications /> },
       { path: '/onboarding', element: <CustomerOnboarding /> },
       { path: '/owner/onboarding', element: <OwnerOnboarding /> },
       { path: '/welcome', element: <Welcome loginPath="/login" signupPath="/signup" /> },

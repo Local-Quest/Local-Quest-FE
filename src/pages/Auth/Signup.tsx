@@ -2,8 +2,8 @@ import { useState, type FormEvent } from 'react'
 import styled from '@emotion/styled'
 import { useNavigate } from 'react-router-dom'
 import { colors } from '@/styles/tokens'
-
-// TODO(API 연동): POST /signup { username, password, nickname, role } 로 교체
+import { useAuthStore } from '@/store/useAuthStore'
+import { getAuthErrorMessage } from '@/api/auth'
 
 const Wrapper = styled.div`
   display: flex;
@@ -103,6 +103,7 @@ interface SignupProps {
 
 export function Signup({ role, loginPath, homePath }: SignupProps) {
   const navigate = useNavigate()
+  const signup = useAuthStore((s) => s.signup)
   const [username, setUsername] = useState('')
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
@@ -110,7 +111,7 @@ export function Signup({ role, loginPath, homePath }: SignupProps) {
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!username || !nickname || !password || !passwordConfirm) {
       setError('모든 항목을 입력해주세요')
@@ -122,12 +123,15 @@ export function Signup({ role, loginPath, homePath }: SignupProps) {
     }
     setError(null)
     setSubmitting(true)
-    // TODO(API 연동): apiClient.post('/signup', { username, password, nickname, role })
-    //   .then(...) 로 교체하고 성공 시 homePath(또는 로그인 화면)로 이동
-    window.setTimeout(() => {
+    try {
+      const user = await signup({ username, password, nickname, role })
+      // 서버가 토큰까지 내려주면 자동 로그인 상태 -> 홈으로, 아니면 로그인 화면으로.
+      navigate(user ? homePath : loginPath, { replace: true })
+    } catch (err) {
+      setError(getAuthErrorMessage(err))
+    } finally {
       setSubmitting(false)
-      navigate(homePath)
-    }, 300)
+    }
   }
 
   return (

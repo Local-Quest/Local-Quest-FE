@@ -2,9 +2,8 @@ import { useState, type FormEvent } from 'react'
 import styled from '@emotion/styled'
 import { useNavigate } from 'react-router-dom'
 import { colors } from '@/styles/tokens'
-
-// TODO(API 연동): POST /login { username, password, role } 로 교체
-// 응답: { userId, role, accessToken, refreshToken, ... } -> zustand 유저 스토어에 저장
+import { useAuthStore } from '@/store/useAuthStore'
+import { getAuthErrorMessage } from '@/api/auth'
 
 const Wrapper = styled.div`
   display: flex;
@@ -104,12 +103,13 @@ interface LoginProps {
 
 export function Login({ role, signupPath, homePath }: LoginProps) {
   const navigate = useNavigate()
+  const login = useAuthStore((s) => s.login)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!username || !password) {
       setError('아이디와 비밀번호를 입력해주세요')
@@ -117,12 +117,14 @@ export function Login({ role, signupPath, homePath }: LoginProps) {
     }
     setError(null)
     setSubmitting(true)
-    // TODO(API 연동): apiClient.post('/login', { username, password, role })
-    //   .then(...) 로 교체하고 성공 시 homePath로 이동
-    window.setTimeout(() => {
+    try {
+      await login({ username, password, role })
+      navigate(homePath, { replace: true })
+    } catch (err) {
+      setError(getAuthErrorMessage(err))
+    } finally {
       setSubmitting(false)
-      navigate(homePath)
-    }, 300)
+    }
   }
 
   return (

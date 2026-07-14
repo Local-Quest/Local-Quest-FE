@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import styled from '@emotion/styled'
 import { useNavigate } from 'react-router-dom'
-import { MapPin, ChevronDown, CalendarDays, Bell } from 'lucide-react'
+import { MapPin, ChevronDown, CalendarDays, Bell, Check } from 'lucide-react'
 import { ProgressRing } from '@/components/ProgressRing'
 import { colors } from '@/styles/tokens'
 
@@ -31,8 +32,10 @@ const weeklyProgress: DayProgress[] = [
 const todayProgress = { completed: 3, max: 5 }
 const todayRewardPoints = 500 // TODO(API 연동): 다음 미션 완료 보상 포인트, today-progress 응답에서 내려받을 값
 const pointBalance = 1240
-const locationLabel = '유성구'
 const userName = '지환님'
+
+// TODO(API 연동): GET /customer/regions 또는 프로필의 활동 지역 목록으로 교체
+const regions = ['유성구', '서구', '중구', '동구', '대덕구']
 
 interface NearbyEvent {
   id: string
@@ -65,6 +68,10 @@ const TopBar = styled.div`
   justify-content: space-between;
 `
 
+const LocationWrap = styled.div`
+  position: relative;
+`
+
 const LocationButton = styled.button`
   display: flex;
   align-items: center;
@@ -76,6 +83,54 @@ const LocationButton = styled.button`
   font-weight: 700;
   font-size: 12px;
   color: ${colors.black};
+`
+
+const LocationMenu = styled.div`
+  position: absolute;
+  left: 0;
+  top: 30px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  min-width: 132px;
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid ${colors.orange200};
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(31, 26, 21, 0.12);
+`
+
+const LocationMenuTitle = styled.p`
+  padding: 6px 10px 4px;
+  font-weight: 600;
+  font-size: 11px;
+  color: #a2917f;
+`
+
+const LocationMenuItem = styled.button<{ active: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 8px;
+  background: ${(p) => (p.active ? '#fbf3ec' : 'none')};
+  cursor: pointer;
+  font-weight: ${(p) => (p.active ? 700 : 500)};
+  font-size: 13px;
+  color: ${colors.black};
+  text-align: left;
+`
+
+const MenuBackdrop = styled.button`
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: default;
 `
 
 const TopBarRight = styled.div`
@@ -291,20 +346,44 @@ const EventBadge = styled.div`
 
 export function Main() {
   const navigate = useNavigate()
+  const [location, setLocation] = useState(regions[0])
+  const [locationOpen, setLocationOpen] = useState(false)
 
   return (
     <Page>
       <TopBar>
-        <LocationButton type="button">
-          <MapPin size={20} />
-          {locationLabel}
-          <ChevronDown size={14} />
-        </LocationButton>
+        <LocationWrap>
+          {locationOpen && <MenuBackdrop type="button" aria-label="닫기" onClick={() => setLocationOpen(false)} />}
+          <LocationButton type="button" onClick={() => setLocationOpen((v) => !v)}>
+            <MapPin size={20} />
+            {location}
+            <ChevronDown size={14} />
+          </LocationButton>
+          {locationOpen && (
+            <LocationMenu>
+              <LocationMenuTitle>활동 지역 선택</LocationMenuTitle>
+              {regions.map((region) => (
+                <LocationMenuItem
+                  key={region}
+                  type="button"
+                  active={region === location}
+                  onClick={() => {
+                    setLocation(region)
+                    setLocationOpen(false)
+                  }}
+                >
+                  {region}
+                  {region === location && <Check size={14} color={colors.orange500} strokeWidth={3} />}
+                </LocationMenuItem>
+              ))}
+            </LocationMenu>
+          )}
+        </LocationWrap>
         <TopBarRight>
           <CircleIconButton type="button" aria-label="캘린더" onClick={() => navigate('/calendar')}>
             <CalendarDays size={20} />
           </CircleIconButton>
-          <CircleIconButton type="button" aria-label="알림">
+          <CircleIconButton type="button" aria-label="알림" onClick={() => navigate('/notifications')}>
             <Bell size={20} />
           </CircleIconButton>
           <PointsPill>P {pointBalance.toLocaleString()}</PointsPill>
@@ -320,7 +399,9 @@ export function Main() {
         {weeklyProgress.map((d) => (
           <DayColumn key={d.day}>
             <DayLabel isToday={d.isToday}>{d.day}</DayLabel>
-            <ProgressRing value={d.completed} max={d.max} size={40} thickness={5} />
+            <ProgressRing value={d.completed} max={d.max} size={40} thickness={5}>
+              {d.completed >= d.max && <Check size={18} color={colors.orange500} strokeWidth={3} />}
+            </ProgressRing>
           </DayColumn>
         ))}
       </WeekRow>
@@ -333,7 +414,9 @@ export function Main() {
             <br />
             <span>{todayRewardPoints}P 획득</span>
           </TodayCardHeadline>
-          <GoToMissionButton type="button">미션하러 가기</GoToMissionButton>
+          <GoToMissionButton type="button" onClick={() => navigate('/missions')}>
+            미션하러 가기
+          </GoToMissionButton>
         </TodayCardText>
         <ProgressRing value={todayProgress.completed} max={todayProgress.max} size={103} thickness={8}>
           <RingValue>

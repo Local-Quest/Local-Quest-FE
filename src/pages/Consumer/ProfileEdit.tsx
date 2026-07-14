@@ -1,13 +1,17 @@
-import { useState } from 'react'
+import { useRef, useState, type ChangeEvent } from 'react'
 import styled from '@emotion/styled'
 import { useNavigate } from 'react-router-dom'
 import { ImagePlus } from 'lucide-react'
 import { SubPageHeader } from '@/components/SubPageHeader'
+import { useProfileStore } from '@/store/useProfileStore'
 
 // ---------------------------------------------------------------------------
 // TODO(API 연동): PATCH /customer/profile -> {nickname, avatarUrl}
 // 닉네임 중복/형식 검사는 서버 응답 기반으로 교체 필요 (지금은 더미 검증만 존재)
+// 아바타는 목 모드에서 data URL로 localStorage(useProfileStore)에 저장.
 // ---------------------------------------------------------------------------
+
+const MAX_AVATAR_BYTES = 2 * 1024 * 1024 // 2MB
 
 const Page = styled.div`
   display: flex;
@@ -25,7 +29,8 @@ const Body = styled.div`
   padding: 28px 24px 32px;
 `
 
-const AvatarUpload = styled.label`
+const AvatarUpload = styled.label<{ image?: string | null }>`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,14 +39,30 @@ const AvatarUpload = styled.label`
   width: 92px;
   height: 92px;
   border-radius: 46px;
-  background: #f9f7f4;
+  background: ${(p) => (p.image ? `url(${p.image}) center/cover no-repeat` : '#f9f7f4')};
   border: 1px dashed #e6d5c9;
   color: #a2917f;
   cursor: pointer;
+  overflow: hidden;
 
   input {
     display: none;
   }
+`
+
+const AvatarEditBadge = styled.span`
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  background: #1f1a15;
+  color: #fdfbf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fdfbf8;
 `
 
 const AvatarHint = styled.span`
@@ -96,8 +117,27 @@ const SaveButton = styled.button`
 
 export function ProfileEdit() {
   const navigate = useNavigate()
-  const [nickname, setNickname] = useState('지우')
+  const { nickname: savedNickname, avatarUrl: savedAvatar, setProfile } = useProfileStore()
+  const [nickname, setNickname] = useState(savedNickname)
+  const [avatar, setAvatar] = useState<string | null>(savedAvatar)
   const [error, setError] = useState('')
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > MAX_AVATAR_BYTES) {
+      setError('파일 용량이 너무 큽니다 (최대 2MB)')
+      if (fileRef.current) fileRef.current.value = ''
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = () => {
+      setAvatar(typeof reader.result === 'string' ? reader.result : null)
+      setError('')
+    }
+    reader.readAsDataURL(file)
+  }
 
   const handleSave = () => {
     const trimmed = nickname.trim()
@@ -110,6 +150,7 @@ export function ProfileEdit() {
       return
     }
     // TODO(API 연동): 실제로는 서버에서 중복 여부 확인 후 처리
+    setProfile({ nickname: trimmed, avatarUrl: avatar })
     navigate('/mypage', { replace: true })
   }
 
@@ -118,10 +159,17 @@ export function ProfileEdit() {
       <SubPageHeader title="프로필 수정" />
 
       <Body>
-        <AvatarUpload>
-          <ImagePlus size={22} />
-          <AvatarHint>사진 변경</AvatarHint>
-          <input type="file" accept="image/*" />
+        <AvatarUpload image={avatar}>
+          {!avatar && (
+            <>
+              <ImagePlus size={22} />
+              <AvatarHint>사진 변경</AvatarHint>
+            </>
+          )}
+          <AvatarEditBadge>
+            <ImagePlus size={14} />
+          </AvatarEditBadge>
+          <input ref={fileRef} type="file" accept="image/*" onChange={handleFileChange} />
         </AvatarUpload>
 
         <Field>
