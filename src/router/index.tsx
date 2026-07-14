@@ -6,6 +6,11 @@ import { Missions } from '@/pages/Consumer/Missions'
 import { Map } from '@/pages/Consumer/Map'
 import { Coupons } from '@/pages/Consumer/Coupons'
 import { MyPage } from '@/pages/Consumer/MyPage'
+import { MissionDetail } from '@/pages/Consumer/MissionDetail'
+import { ReceiptCapture } from '@/pages/Consumer/ReceiptCapture'
+import { ReceiptAnalyzing } from '@/pages/Consumer/ReceiptAnalyzing'
+import { ReceiptSuccess } from '@/pages/Consumer/ReceiptSuccess'
+import { ReceiptFailure } from '@/pages/Consumer/ReceiptFailure'
 import { ComingSoon } from '@/pages/ComingSoon'
 import { Welcome } from '@/pages/Auth/Welcome'
 import { Login } from '@/pages/Auth/Login'
@@ -30,6 +35,11 @@ export const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       { path: '/start', element: <RoleSelect /> },
+      { path: '/missions/:id', element: <MissionDetail /> },
+      { path: '/missions/:id/verify', element: <ReceiptCapture /> },
+      { path: '/missions/:id/verify/analyzing', element: <ReceiptAnalyzing /> },
+      { path: '/missions/:id/verify/success', element: <ReceiptSuccess /> },
+      { path: '/missions/:id/verify/failure', element: <ReceiptFailure /> },
       { path: '/onboarding', element: <CustomerOnboarding /> },
       { path: '/owner/onboarding', element: <OwnerOnboarding /> },
       { path: '/welcome', element: <Welcome loginPath="/login" signupPath="/signup" /> },

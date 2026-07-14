@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { useNavigate } from 'react-router-dom'
 import { Search, ArrowUpDown, ChevronRight, ImageOff } from 'lucide-react'
 import { PointsBadge } from '@/components/PointsBadge'
 
@@ -217,8 +218,19 @@ const ClosedBadge = styled.span`
   color: #a2917f;
 `
 
-function ItemRight({ mission }: { mission: MissionItem }) {
-  if (mission.state === 'active') return <VerifyButton type="button">인증</VerifyButton>
+function ItemRight({ mission, onVerify }: { mission: MissionItem; onVerify: () => void }) {
+  if (mission.state === 'active')
+    return (
+      <VerifyButton
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation()
+          onVerify()
+        }}
+      >
+        인증
+      </VerifyButton>
+    )
   if (mission.state === 'waiting') return <StatusLabel>대기</StatusLabel>
   if (mission.state === 'done') return <StatusLabel>완료</StatusLabel>
   if (mission.state === 'closed') return <ClosedBadge>마감됨</ClosedBadge>
@@ -226,6 +238,8 @@ function ItemRight({ mission }: { mission: MissionItem }) {
 }
 
 export function Missions() {
+  const navigate = useNavigate()
+
   return (
     <Page>
       <Header>
@@ -259,8 +273,14 @@ export function Missions() {
         {missions.map((mission) => {
           const dim = mission.state === 'done' || mission.state === 'closed'
           const muted = mission.state === 'waiting' || mission.state === 'done' || mission.state === 'closed'
+          const clickable = mission.state !== 'closed'
           return (
-            <Item key={mission.id} dim={dim}>
+            <Item
+              key={mission.id}
+              dim={dim}
+              onClick={clickable ? () => navigate(`/missions/${mission.id}`) : undefined}
+              style={{ cursor: clickable ? 'pointer' : 'default' }}
+            >
               <ItemLeft>
                 <Thumbnail photoUrl={mission.photoUrl}>
                   {!mission.photoUrl && <ImageOff size={18} />}
@@ -279,7 +299,7 @@ export function Missions() {
                   </ItemMeta>
                 </ItemInfo>
               </ItemLeft>
-              <ItemRight mission={mission} />
+              <ItemRight mission={mission} onVerify={() => navigate(`/missions/${mission.id}/verify`)} />
             </Item>
           )
         })}
