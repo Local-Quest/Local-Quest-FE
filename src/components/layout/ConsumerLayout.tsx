@@ -10,7 +10,7 @@ const Shell = styled.div`
   margin: 0 auto;
   background: ${colors.white};
   position: relative;
-  padding-bottom: 80px; /* 하단 네비바에 콘텐츠 안 가리게 */
+  padding-bottom: 100px; /* 하단 네비바(플로팅)에 콘텐츠 안 가리게 */
 `
 
 export function ConsumerLayout() {

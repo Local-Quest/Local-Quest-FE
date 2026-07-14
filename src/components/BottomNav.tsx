@@ -13,18 +13,19 @@ const NAV_ITEMS = [
 
 const Nav = styled.nav`
   position: fixed;
-  bottom: 0;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
-  max-width: 430px;
+  width: calc(100% - 32px);
+  max-width: 398px;
   height: 64px;
   background: ${colors.white};
-  border-top: 1px solid ${colors.orange200};
+  border: 2px solid ${colors.orange500};
+  border-radius: 50px;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 0 20px;
+  padding: 0 18px;
 `
 
 const Item = styled(NavLink)`

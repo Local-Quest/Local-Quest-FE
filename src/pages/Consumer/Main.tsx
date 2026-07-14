@@ -18,13 +18,13 @@ interface DayProgress {
 }
 
 const weeklyProgress: DayProgress[] = [
-  { day: 'MON', completed: 5, max: 5 },
-  { day: 'TUE', completed: 3, max: 5 },
-  { day: 'WED', completed: 4, max: 5 },
-  { day: 'THU', completed: 3, max: 5, isToday: true },
-  { day: 'FRI', completed: 0, max: 5 },
-  { day: 'SAT', completed: 0, max: 5 },
-  { day: 'SUN', completed: 0, max: 5 },
+  { day: '월', completed: 5, max: 5 },
+  { day: '화', completed: 3, max: 5 },
+  { day: '수', completed: 4, max: 5 },
+  { day: '목', completed: 3, max: 5, isToday: true },
+  { day: '금', completed: 0, max: 5 },
+  { day: '토', completed: 0, max: 5 },
+  { day: '일', completed: 0, max: 5 },
 ]
 
 const todayProgress = { completed: 3, max: 5 }
@@ -38,20 +38,22 @@ interface NearbyEvent {
   title: string
   storeName: string
   distanceM: number
-  deadlineLabel: string
+  deadlineLabel?: string
   badgeLabel: string
 }
 
 const nearbyEvents: NearbyEvent[] = [
   { id: '1', title: '생수 1+1 행사', storeName: 'GS25 유성점', distanceM: 120, deadlineLabel: '오늘 마감', badgeLabel: '1+1' },
-  { id: '2', title: '생수 1+1 행사', storeName: 'GS25 유성점', distanceM: 120, deadlineLabel: '오늘 마감', badgeLabel: '1+1' },
+  { id: '2', title: '생수 1+1 행사', storeName: 'GS25 유성점', distanceM: 120, badgeLabel: '1+1' },
   { id: '3', title: '생수 1+1 행사', storeName: 'GS25 유성점', distanceM: 120, deadlineLabel: '오늘 마감', badgeLabel: '1+1' },
+  { id: '4', title: '생수 1+1 행사', storeName: 'GS25 유성점', distanceM: 120, deadlineLabel: '오늘 마감', badgeLabel: '1+1' },
+  { id: '5', title: '생수 1+1 행사', storeName: 'GS25 유성점', distanceM: 120, deadlineLabel: '오늘 마감', badgeLabel: '1+1' },
 ]
 
 const Page = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 10px;
   padding: 16px;
   font-family: 'Pretendard', sans-serif;
 `
@@ -90,6 +92,13 @@ const IconButton = styled.button`
   padding: 4px;
   cursor: pointer;
   color: ${colors.black};
+`
+
+const CalendarIconButton = styled(IconButton)`
+  width: 28px;
+  height: 28px;
+  border: 1px solid ${colors.brown600};
+  border-radius: 25px;
 `
 
 const PointsPill = styled.div`
@@ -133,13 +142,13 @@ const DayColumn = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 8px;
   width: 47px;
 `
 
 const DayLabel = styled.p<{ isToday?: boolean }>`
   font-weight: ${(p) => (p.isToday ? 700 : 500)};
-  font-size: 12px;
+  font-size: 14px;
   color: ${(p) => (p.isToday ? colors.orange500 : colors.black)};
 `
 
@@ -148,8 +157,8 @@ const TodayCard = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 26px 24px;
-  border: 1px solid ${colors.orange600};
+  padding: 20px;
+  border: 2px solid ${colors.orange600};
   border-radius: 25px;
   background: ${colors.greenLight};
 `
@@ -157,7 +166,7 @@ const TodayCard = styled.div`
 const TodayCardText = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 `
 
 const TodayCardLabel = styled.p`
@@ -206,19 +215,20 @@ const RingValue = styled.p`
 const Section = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 `
 
 const SectionTitle = styled.p`
   font-weight: 700;
   font-size: 20px;
   color: ${colors.black};
+  padding: 6px 0;
 `
 
 const EventList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 `
 
 const EventItem = styled.div`
@@ -283,16 +293,16 @@ export function Main() {
     <Page>
       <TopBar>
         <LocationButton type="button">
-          <MapPin size={18} />
+          <MapPin size={20} />
           {locationLabel}
           <ChevronDown size={14} />
         </LocationButton>
         <TopBarRight>
-          <IconButton type="button" aria-label="캘린더">
-            <CalendarDays size={22} />
-          </IconButton>
+          <CalendarIconButton type="button" aria-label="캘린더">
+            <CalendarDays size={20} />
+          </CalendarIconButton>
           <IconButton type="button" aria-label="알림">
-            <Bell size={22} />
+            <Bell size={28} />
           </IconButton>
           <PointsPill>P {pointBalance.toLocaleString()}</PointsPill>
         </TopBarRight>
@@ -307,7 +317,7 @@ export function Main() {
         {weeklyProgress.map((d) => (
           <DayColumn key={d.day}>
             <DayLabel isToday={d.isToday}>{d.day}</DayLabel>
-            <ProgressRing value={d.completed} max={d.max} size={33} thickness={4} />
+            <ProgressRing value={d.completed} max={d.max} size={40} thickness={5} />
           </DayColumn>
         ))}
       </WeekRow>
@@ -342,8 +352,12 @@ export function Main() {
                     <span>{event.storeName}</span>
                     <span>|</span>
                     <span>{event.distanceM}m</span>
-                    <span>|</span>
-                    <strong>{event.deadlineLabel}</strong>
+                    {event.deadlineLabel && (
+                      <>
+                        <span>|</span>
+                        <strong>{event.deadlineLabel}</strong>
+                      </>
+                    )}
                   </EventMeta>
                 </EventInfo>
                 <EventBadge>{event.badgeLabel}</EventBadge>
