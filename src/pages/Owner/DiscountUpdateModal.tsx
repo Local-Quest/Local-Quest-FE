@@ -4,11 +4,11 @@ import { OwnerHeader } from '@/components/owner/OwnerHeader'
 import { FormPage, FormBody, Field, FieldLabel, TextInput } from '@/components/owner/form'
 
 // ---------------------------------------------------------------------------
-// TODO(API 연동): PATCH /owner/discounts/:id
-// 이미 활성화된 할인이라 저장 시 즉시 반영 확인 시트가 뜸
+// TODO(API 연동): PATCH /owner/discounts/:id -> {title, content, remainingQty}
+// 이미 활성화된 이벤트라 저장 시 즉시 반영 확인 시트가 뜸
 // ---------------------------------------------------------------------------
 
-const discount = { productName: '크루아상', discountRate: '50%', remainingQty: '8' }
+const event = { title: '크루아상 마감할인', content: '50% 할인', remainingQty: '8' }
 
 const Backdrop = styled.div`
   position: fixed;
@@ -85,19 +85,19 @@ export function DiscountUpdateModal() {
   return (
     <>
       <FormPage>
-        <OwnerHeader title="마감할인 수정" />
+        <OwnerHeader title="이벤트 수정" />
         <FormBody>
           <Field>
-            <FieldLabel>상품명</FieldLabel>
-            <TextInput defaultValue={discount.productName} />
+            <FieldLabel>제목</FieldLabel>
+            <TextInput defaultValue={event.title} />
           </Field>
           <Field>
-            <FieldLabel>할인율</FieldLabel>
-            <TextInput defaultValue={discount.discountRate} />
+            <FieldLabel>내용</FieldLabel>
+            <TextInput defaultValue={event.content} />
           </Field>
           <Field>
             <FieldLabel>남은 수량</FieldLabel>
-            <TextInput defaultValue={discount.remainingQty} />
+            <TextInput defaultValue={event.remainingQty} />
           </Field>
         </FormBody>
       </FormPage>
@@ -107,7 +107,7 @@ export function DiscountUpdateModal() {
           <Handle />
           <Title>지금 바로 반영할까요?</Title>
           <Desc>
-            활성 중인 할인이라 <strong>즉시 반영</strong>돼요.
+            활성 중인 이벤트라 <strong>즉시 반영</strong>돼요.
             <br />
             이미 노출된 고객 화면도 함께 갱신됩니다.
           </Desc>

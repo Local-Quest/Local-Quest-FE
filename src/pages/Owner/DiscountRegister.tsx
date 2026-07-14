@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import { OwnerHeader } from '@/components/owner/OwnerHeader'
-import styled from '@emotion/styled'
 import {
   FormPage,
   FormBody,
@@ -15,37 +14,26 @@ import {
 } from '@/components/owner/form'
 
 // ---------------------------------------------------------------------------
-// TODO(API 연동): POST /owner/discounts -> {productName, discountRate, remainingQty, deadline}
+// TODO(API 연동): POST /owner/discounts -> {title, content, remainingQty, deadline}
 // 등록 즉시 활성화되어 손님 메인 "근처 이벤트"에 노출됨
+// content는 자유 텍스트라 "50% 할인", "1+1" 등 형식 제한 없이 받음
 // ---------------------------------------------------------------------------
-
-const PercentRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  input {
-    flex: 1;
-  }
-`
 
 export function DiscountRegister() {
   const navigate = useNavigate()
 
   return (
     <FormPage>
-      <OwnerHeader title="마감할인 등록" />
+      <OwnerHeader title="이벤트 등록" />
       <FormBody>
         <Field>
-          <FieldLabel>상품명 *</FieldLabel>
-          <TextInput placeholder="할인할 상품명 입력" />
+          <FieldLabel>제목 *</FieldLabel>
+          <TextInput placeholder="이벤트 제목 입력 (예: 크루아상 마감할인)" />
         </Field>
         <Field>
-          <FieldLabel>할인율 *</FieldLabel>
-          <PercentRow>
-            <TextInput type="number" placeholder="50" />
-            <span>%</span>
-          </PercentRow>
+          <FieldLabel>내용 *</FieldLabel>
+          <TextInput placeholder="예: 50% 할인, 1+1" />
+          <HintText>할인율뿐 아니라 1+1, 증정 등 원하는 내용을 자유롭게 입력하세요</HintText>
         </Field>
         <Field>
           <FieldLabel>남은 수량 *</FieldLabel>

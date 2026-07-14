@@ -206,7 +206,7 @@ export function OwnerMain() {
           + 미션 등록
         </ActionButton>
         <ActionButton variant="orange" type="button" onClick={() => navigate('/owner/discounts/register')}>
-          + 마감할인 등록
+          + 이벤트 등록
         </ActionButton>
         <ActionButton variant="white" type="button" onClick={() => navigate('/owner/coupons/create')}>
           + 쿠폰 생성
