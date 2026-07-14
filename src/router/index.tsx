@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { ConsumerLayout } from '@/components/layout/ConsumerLayout'
 import { AuthLayout } from '@/components/layout/AuthLayout'
+import { OwnerLayout } from '@/components/layout/OwnerLayout'
 import { Main } from '@/pages/Consumer/Main'
 import { Missions } from '@/pages/Consumer/Missions'
 import { Map } from '@/pages/Consumer/Map'
@@ -15,13 +16,26 @@ import { MissionCompleteModal } from '@/pages/Consumer/MissionCompleteModal'
 import { CouponRedeemSheet } from '@/pages/Consumer/CouponRedeemSheet'
 import { InsufficientPointsSheet } from '@/pages/Consumer/InsufficientPointsSheet'
 import { MonthlyProgress } from '@/pages/Consumer/MonthlyProgress'
-import { ComingSoon } from '@/pages/ComingSoon'
 import { Welcome } from '@/pages/Auth/Welcome'
 import { Login } from '@/pages/Auth/Login'
 import { Signup } from '@/pages/Auth/Signup'
 import { RoleSelect } from '@/pages/Auth/RoleSelect'
 import { CustomerOnboarding } from '@/pages/Auth/CustomerOnboarding'
 import { OwnerOnboarding } from '@/pages/Auth/OwnerOnboarding'
+import { OwnerMain } from '@/pages/Owner/OwnerMain'
+import { OwnerManage } from '@/pages/Owner/OwnerManage'
+import { OwnerMyPage } from '@/pages/Owner/OwnerMyPage'
+import { StoreRegister } from '@/pages/Owner/StoreRegister'
+import { MissionRegister } from '@/pages/Owner/MissionRegister'
+import { DiscountRegister } from '@/pages/Owner/DiscountRegister'
+import { CouponCreate } from '@/pages/Owner/CouponCreate'
+import { OwnerCouponManage } from '@/pages/Owner/OwnerCouponManage'
+import { OwnerMissionDetail } from '@/pages/Owner/OwnerMissionDetail'
+import { MissionDeleteModal } from '@/pages/Owner/MissionDeleteModal'
+import { DiscountUpdateModal } from '@/pages/Owner/DiscountUpdateModal'
+import { OwnerCouponDetail } from '@/pages/Owner/OwnerCouponDetail'
+import { CouponUseModal } from '@/pages/Owner/CouponUseModal'
+import { CouponUseComplete } from '@/pages/Owner/CouponUseComplete'
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +47,15 @@ export const router = createBrowserRouter([
       { path: 'map', element: <Map /> },
       { path: 'coupons', element: <Coupons /> },
       { path: 'mypage', element: <MyPage /> },
+    ],
+  },
+  {
+    path: '/owner',
+    element: <OwnerLayout />,
+    children: [
+      { index: true, element: <OwnerMain /> },
+      { path: 'manage', element: <OwnerManage /> },
+      { path: 'mypage', element: <OwnerMyPage /> },
     ],
   },
   {
@@ -56,7 +79,17 @@ export const router = createBrowserRouter([
       { path: '/owner/welcome', element: <Welcome loginPath="/owner/login" signupPath="/owner/signup" showLogo /> },
       { path: '/owner/login', element: <Login role="OWNER" signupPath="/owner/signup" homePath="/owner" /> },
       { path: '/owner/signup', element: <Signup role="OWNER" loginPath="/owner/login" homePath="/owner" /> },
-      { path: '/owner', element: <ComingSoon title="사장님 대시보드" /> },
+      { path: '/owner/store/register', element: <StoreRegister /> },
+      { path: '/owner/missions/register', element: <MissionRegister /> },
+      { path: '/owner/discounts/register', element: <DiscountRegister /> },
+      { path: '/owner/coupons/create', element: <CouponCreate /> },
+      { path: '/owner/coupons', element: <OwnerCouponManage /> },
+      { path: '/owner/coupons/:id', element: <OwnerCouponDetail /> },
+      { path: '/owner/coupons/:id/use', element: <CouponUseModal /> },
+      { path: '/owner/coupons/:id/use/complete', element: <CouponUseComplete /> },
+      { path: '/owner/missions/:id', element: <OwnerMissionDetail /> },
+      { path: '/owner/missions/:id/delete', element: <MissionDeleteModal /> },
+      { path: '/owner/discounts/:id/edit', element: <DiscountUpdateModal /> },
     ],
   },
 ])
