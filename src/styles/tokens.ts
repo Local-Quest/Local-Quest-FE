@@ -6,10 +6,12 @@ export const colors = {
 
   orange100: '#FEE8DA',
   orange200: '#FEDDC9',
+  orange400: '#FDC5A1',
   orange500: '#FCB689',
   orange600: '#E5A67D',
   orangeText: '#E7803E',
   orangeBadgeText: '#B75C19',
+  orangeCta: '#FA9C57',
 
   blue600: '#171427',
   blue800: '#0E0C18',
