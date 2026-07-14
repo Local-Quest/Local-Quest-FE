@@ -14,6 +14,7 @@ const styles = css`
   body {
     margin: 0;
     font-family:
+      'Pretendard',
       system-ui,
       -apple-system,
       'Segoe UI',
