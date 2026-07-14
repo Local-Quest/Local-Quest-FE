@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import styled from '@emotion/styled'
-import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { PointsBadge } from '@/components/PointsBadge'
 
@@ -8,6 +7,9 @@ import { PointsBadge } from '@/components/PointsBadge'
 // TODO(API 연동): 아래 더미 데이터는 실제로 이 엔드포인트들로 교체될 예정
 // - GET /customer/points/history                 -> pointBalance
 // - GET /customer/coupons?status=available|used|expired -> tabs, coupons
+// - GET /customer/coupons/{couponId}              -> 쿠폰 상세, POST .../use -> 사용 처리
+//   (참고: 기능명세서/API명세서에 "포인트로 쿠폰 교환"은 없음 — 보유 쿠폰을 매장에서 "사용"하는
+//   플로우만 존재. 카드 클릭 시 이동할 쿠폰 상세/사용 화면은 아직 미구현이라 임시로 비활성화해둠.)
 // ---------------------------------------------------------------------------
 
 const pointBalance = 1240
@@ -188,7 +190,6 @@ const EmptyText = styled.p`
 `
 
 export function Coupons() {
-  const navigate = useNavigate()
   const [status, setStatus] = useState<CouponStatus>('available')
   const coupons = couponsByStatus[status]
 
@@ -215,11 +216,7 @@ export function Coupons() {
       {coupons.length > 0 && (
         <List>
           {coupons.map((coupon) => (
-            <CouponRow
-              key={coupon.id}
-              onClick={() => navigate(`/coupons/${coupon.id}/redeem`)}
-              style={{ cursor: 'pointer' }}
-            >
+            <CouponRow key={coupon.id}>
               <CouponInfo>
                 <CouponTitle>{coupon.title}</CouponTitle>
                 <CouponMeta>

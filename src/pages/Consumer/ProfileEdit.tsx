@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import styled from '@emotion/styled'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, ImagePlus } from 'lucide-react'
+import { ImagePlus } from 'lucide-react'
+import { SubPageHeader } from '@/components/SubPageHeader'
 
 // ---------------------------------------------------------------------------
 // TODO(API 연동): PATCH /customer/profile -> {nickname, avatarUrl}
@@ -14,31 +15,6 @@ const Page = styled.div`
   min-height: 100vh;
   background: #fdfbf8;
   font-family: 'Pretendard', sans-serif;
-`
-
-const Bar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding: 14px 24px;
-  border-bottom: 1px solid #f1e9df;
-`
-
-const BackButton = styled.button`
-  position: absolute;
-  left: 24px;
-  background: none;
-  border: none;
-  color: #1f1a15;
-  cursor: pointer;
-  display: flex;
-`
-
-const Title = styled.p`
-  font-weight: 600;
-  font-size: 16px;
-  color: #1f1a15;
 `
 
 const Body = styled.div`
@@ -139,12 +115,7 @@ export function ProfileEdit() {
 
   return (
     <Page>
-      <Bar>
-        <BackButton type="button" aria-label="뒤로가기" onClick={() => navigate(-1)}>
-          <ChevronLeft size={20} />
-        </BackButton>
-        <Title>프로필 수정</Title>
-      </Bar>
+      <SubPageHeader title="프로필 수정" />
 
       <Body>
         <AvatarUpload>

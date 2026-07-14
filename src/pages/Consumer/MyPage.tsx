@@ -1,13 +1,13 @@
 import styled from '@emotion/styled'
 import { useNavigate } from 'react-router-dom'
-import { Settings, ImagePlus, Clock, ClipboardCheck, Ticket, Bell, ChevronRight } from 'lucide-react'
+import { Settings, ImagePlus, Clock, ClipboardCheck, Ticket, ChevronRight } from 'lucide-react'
 
 // ---------------------------------------------------------------------------
 // TODO(API 연동): 아래 더미 데이터는 실제로 이 엔드포인트들로 교체될 예정
 // - GET /customer/profile                -> userName, regionLabel, joinedLabel, avatarUrl
 // - GET /customer/points/history         -> pointsEarnedCount, pointBalance
 // - GET /customer/missions/history       -> completedMissionCount
-// - POST /auth/logout                    -> 로그아웃 버튼 액션
+// 로그아웃은 이 페이지가 아니라 설정(/mypage/settings) 안에서만 처리함
 // ---------------------------------------------------------------------------
 
 const profile = {
@@ -26,7 +26,6 @@ const menuItems = [
   { icon: Clock, label: '포인트 적립 내역', path: '/mypage/points' },
   { icon: ClipboardCheck, label: '미션 기록', path: '/mypage/missions' },
   { icon: Ticket, label: '쿠폰함', path: '/coupons' },
-  { icon: Bell, label: '알림 설정', path: '/mypage/settings' },
   { icon: Settings, label: '설정', path: '/mypage/settings' },
 ]
 
@@ -186,17 +185,6 @@ const MenuLabel = styled.span`
   color: #1f1a15;
 `
 
-const LogoutButton = styled.button`
-  padding: 25px 0;
-  text-align: center;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 12.5px;
-  color: #c3b3a3;
-`
-
 export function MyPage() {
   const navigate = useNavigate()
 
@@ -243,10 +231,6 @@ export function MyPage() {
           </MenuRow>
         ))}
       </MenuList>
-
-      <LogoutButton type="button" onClick={() => navigate('/welcome', { replace: true })}>
-        로그아웃
-      </LogoutButton>
     </Page>
   )
 }

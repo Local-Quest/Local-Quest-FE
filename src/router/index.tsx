@@ -13,8 +13,6 @@ import { ReceiptAnalyzing } from '@/pages/Consumer/ReceiptAnalyzing'
 import { ReceiptSuccess } from '@/pages/Consumer/ReceiptSuccess'
 import { ReceiptFailure } from '@/pages/Consumer/ReceiptFailure'
 import { MissionCompleteModal } from '@/pages/Consumer/MissionCompleteModal'
-import { CouponRedeemSheet } from '@/pages/Consumer/CouponRedeemSheet'
-import { InsufficientPointsSheet } from '@/pages/Consumer/InsufficientPointsSheet'
 import { MonthlyProgress } from '@/pages/Consumer/MonthlyProgress'
 import { ProfileEdit } from '@/pages/Consumer/ProfileEdit'
 import { PointsHistory } from '@/pages/Consumer/PointsHistory'
@@ -74,8 +72,6 @@ export const router = createBrowserRouter([
       { path: '/missions/:id/verify/success', element: <ReceiptSuccess /> },
       { path: '/missions/:id/verify/failure', element: <ReceiptFailure /> },
       { path: '/missions/:id/verify/complete', element: <MissionCompleteModal /> },
-      { path: '/coupons/:id/redeem', element: <CouponRedeemSheet /> },
-      { path: '/coupons/:id/redeem/insufficient', element: <InsufficientPointsSheet /> },
       { path: '/calendar', element: <MonthlyProgress /> },
       { path: '/mypage/edit', element: <ProfileEdit /> },
       { path: '/mypage/points', element: <PointsHistory /> },
