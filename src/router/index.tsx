@@ -59,6 +59,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <OwnerMain /> },
       { path: 'manage', element: <OwnerManage /> },
+      { path: 'coupons', element: <OwnerCouponManage /> },
       { path: 'mypage', element: <OwnerMyPage /> },
     ],
   },
@@ -89,7 +90,6 @@ export const router = createBrowserRouter([
       { path: '/owner/missions/register', element: <MissionRegister /> },
       { path: '/owner/discounts/register', element: <DiscountRegister /> },
       { path: '/owner/coupons/create', element: <CouponCreate /> },
-      { path: '/owner/coupons', element: <OwnerCouponManage /> },
       { path: '/owner/coupons/:id', element: <OwnerCouponDetail /> },
       { path: '/owner/coupons/:id/use', element: <CouponUseModal /> },
       { path: '/owner/coupons/:id/use/complete', element: <CouponUseComplete /> },

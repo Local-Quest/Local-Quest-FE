@@ -1,10 +1,11 @@
 import styled from '@emotion/styled'
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, ClipboardList, User } from 'lucide-react'
+import { LayoutDashboard, ClipboardList, Ticket, User } from 'lucide-react'
 
 const NAV_ITEMS = [
   { to: '/owner', label: '대시보드', icon: LayoutDashboard, end: true },
   { to: '/owner/manage', label: '관리', icon: ClipboardList, end: false },
+  { to: '/owner/coupons', label: '쿠폰', icon: Ticket, end: false },
   { to: '/owner/mypage', label: '마이페이지', icon: User, end: false },
 ] as const
 
