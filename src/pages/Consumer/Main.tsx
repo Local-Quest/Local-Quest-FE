@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { useNavigate } from 'react-router-dom'
 import { MapPin, ChevronDown, CalendarDays, Bell } from 'lucide-react'
 import { ProgressRing } from '@/components/ProgressRing'
 import { colors } from '@/styles/tokens'
@@ -94,7 +95,7 @@ const IconButton = styled.button`
   color: ${colors.black};
 `
 
-const CalendarIconButton = styled(IconButton)`
+const CircleIconButton = styled(IconButton)`
   width: 28px;
   height: 28px;
   border: 1px solid ${colors.brown600};
@@ -289,6 +290,8 @@ const EventBadge = styled.div`
 `
 
 export function Main() {
+  const navigate = useNavigate()
+
   return (
     <Page>
       <TopBar>
@@ -298,12 +301,12 @@ export function Main() {
           <ChevronDown size={14} />
         </LocationButton>
         <TopBarRight>
-          <CalendarIconButton type="button" aria-label="캘린더">
+          <CircleIconButton type="button" aria-label="캘린더" onClick={() => navigate('/calendar')}>
             <CalendarDays size={20} />
-          </CalendarIconButton>
-          <IconButton type="button" aria-label="알림">
-            <Bell size={28} />
-          </IconButton>
+          </CircleIconButton>
+          <CircleIconButton type="button" aria-label="알림">
+            <Bell size={20} />
+          </CircleIconButton>
           <PointsPill>P {pointBalance.toLocaleString()}</PointsPill>
         </TopBarRight>
       </TopBar>
