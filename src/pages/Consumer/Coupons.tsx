@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import styled from '@emotion/styled'
+import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { PointsBadge } from '@/components/PointsBadge'
 
@@ -187,6 +188,7 @@ const EmptyText = styled.p`
 `
 
 export function Coupons() {
+  const navigate = useNavigate()
   const [status, setStatus] = useState<CouponStatus>('available')
   const coupons = couponsByStatus[status]
 
@@ -213,7 +215,11 @@ export function Coupons() {
       {coupons.length > 0 && (
         <List>
           {coupons.map((coupon) => (
-            <CouponRow key={coupon.id}>
+            <CouponRow
+              key={coupon.id}
+              onClick={() => navigate(`/coupons/${coupon.id}/redeem`)}
+              style={{ cursor: 'pointer' }}
+            >
               <CouponInfo>
                 <CouponTitle>{coupon.title}</CouponTitle>
                 <CouponMeta>

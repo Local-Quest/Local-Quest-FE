@@ -11,6 +11,10 @@ import { ReceiptCapture } from '@/pages/Consumer/ReceiptCapture'
 import { ReceiptAnalyzing } from '@/pages/Consumer/ReceiptAnalyzing'
 import { ReceiptSuccess } from '@/pages/Consumer/ReceiptSuccess'
 import { ReceiptFailure } from '@/pages/Consumer/ReceiptFailure'
+import { MissionCompleteModal } from '@/pages/Consumer/MissionCompleteModal'
+import { CouponRedeemSheet } from '@/pages/Consumer/CouponRedeemSheet'
+import { InsufficientPointsSheet } from '@/pages/Consumer/InsufficientPointsSheet'
+import { MonthlyProgress } from '@/pages/Consumer/MonthlyProgress'
 import { ComingSoon } from '@/pages/ComingSoon'
 import { Welcome } from '@/pages/Auth/Welcome'
 import { Login } from '@/pages/Auth/Login'
@@ -40,6 +44,10 @@ export const router = createBrowserRouter([
       { path: '/missions/:id/verify/analyzing', element: <ReceiptAnalyzing /> },
       { path: '/missions/:id/verify/success', element: <ReceiptSuccess /> },
       { path: '/missions/:id/verify/failure', element: <ReceiptFailure /> },
+      { path: '/missions/:id/verify/complete', element: <MissionCompleteModal /> },
+      { path: '/coupons/:id/redeem', element: <CouponRedeemSheet /> },
+      { path: '/coupons/:id/redeem/insufficient', element: <InsufficientPointsSheet /> },
+      { path: '/calendar', element: <MonthlyProgress /> },
       { path: '/onboarding', element: <CustomerOnboarding /> },
       { path: '/owner/onboarding', element: <OwnerOnboarding /> },
       { path: '/welcome', element: <Welcome loginPath="/login" signupPath="/signup" /> },
